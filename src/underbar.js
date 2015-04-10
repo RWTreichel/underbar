@@ -207,10 +207,11 @@
     iterator = typeof iterator === "function" ? iterator : _.identity;
 
     return _.reduce(collection, function(allTrue, item) {
+      // Once a false value has been found, no further inspection is needed.
       if (!allTrue) {
         return false;
       } else {
-        // Using the double-not operator to cast to Boolean
+        // Using the double-not operator trick to cast to Boolean.
         return !!iterator(item);
       }
     }, true);
@@ -223,10 +224,11 @@
     iterator = typeof iterator === "function" ? iterator : _.identity;
 
     return _.reduce(collection, function(oneTrue, item) {
+      // Once any item is evaluated as true, no further inspection is needed.
       if (oneTrue) {
         return true;
       } else {
-        // Using the double-not operator to cast to Boolean
+        // Using the double-not operator trick to cast to Boolean.
         return !!iterator(item);
       }
     }, false);
@@ -252,11 +254,53 @@
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    // First object will be the one that is modified.
+    // Avoid writing to it unnecessarily (Note i starts at 1, not 0).
+    var args = [];
+
+    for (var i = 1, len = arguments.length; i < len; i++) {
+      args[i-1] = arguments[i];
+    }
+
+    // 1. Unpack each object parameter into item.
+    // 2. Extract item's keys.
+    // 3. Unpack the keys array into name.
+    // 4. Write item's property value at name to obj at name.
+
+    return _.reduce(args, function(obj, item) {
+      var keys = Object.keys(item);
+
+      _.each(keys, function(name) {
+        obj[name] = item[name];
+      });
+
+      return obj;
+    }, obj);
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    // First object will be the one that is modified.
+    // Avoid writing to it unnecessarily (Note i starts at 1, not 0).
+    var args = [];
+
+    for (var i = 1, len = arguments.length; i < len; i++) {
+      args[i-1] = arguments[i];
+    }
+
+    return _.reduce(args, function(obj, item) {
+      var keys = Object.keys(item);
+
+      _.each(keys, function(name) {
+        // Write to obj only if obj does not already have a key called 'name'.
+        if (!(name in obj)) {
+          obj[name] = item[name];
+        }
+      });
+
+      return obj;
+    }, obj);
   };
 
 
