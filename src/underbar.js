@@ -53,6 +53,9 @@
   // Note: _.each does not have a return value, but rather simply runs the
   // iterator function over each item in the input collection.
   _.each = function(collection, iterator) {
+    // Set iterator's default, in case an iterator is not provided.
+    var iterator = iterator || _.identity;
+
     if (Array.isArray(collection)) {
       for (var i = 0, len = collection.length; i < len; i ++) {
         iterator(collection[i], i, collection);
@@ -85,8 +88,8 @@
   _.filter = function(collection, test) {
     var result = [];
 
-    _.each(collection, function(item) {
-      if (test(item)) {
+    _.each(collection, function(item, index, collection) {
+      if (test(item, index, collection)) {
         result.push(item);
       }
     });
@@ -98,15 +101,9 @@
   _.reject = function(collection, test) {
     // TIP: see if you can re-use _.filter() here, without simply
     // copying code in and modifying it
-    var result = [];
-
-    _.filter(collection, function(item) {
-      if(!test(item)) {
-        result.push(item);
-      }
+    return _.filter(collection, function(item) {
+      return !test(item);
     });
-
-    return result;
   };
 
   // Produce a duplicate-free version of the array.
