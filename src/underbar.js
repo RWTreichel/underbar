@@ -344,6 +344,34 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+    var previousArgSets = [];
+    var results = {};
+
+    return function() {
+      var args = [];
+      var repeated;
+
+      // Unpack arguments into Array object args, for simplicity.
+      for (var i = 0, len = arguments.length; i < len; i++) {
+        args[i] = arguments[i];
+      }
+
+      // Investigate if the current set of arguments has been called before.
+      repeated = _.some(previousArgSets, function(argSet) {
+        return _.equalContents(argSet, args);
+      });
+
+      // If a new set of arguments is encountered, store them as well as
+      // the function's return value.
+      if (!repeated) {
+        previousArgSets.push(args);
+        results[args[0]] = func.apply(this, args);
+      } 
+
+      // A hash table probably has to be implemented to avoid storing results
+      // only by first argument value.
+      return results[args[0]];
+    };
   };
 
   // Compares the contents of two collections, returning true only if each
