@@ -326,7 +326,7 @@
     return function() {
       if (!alreadyCalled) {
         // TIP: .apply(this, arguments) is the standard way to pass on all of the
-        // infromation from one function call to another.
+        // information from one function call to another.
         result = func.apply(this, arguments);
         alreadyCalled = true;
       }
@@ -344,6 +344,32 @@
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+  };
+
+  // Compares the contents of two collections, returning true only if each
+  // item in collectionA can be found somewhere within collectionB, and
+  // only if collectionA's length according to _.len is the same as collectionB.
+
+  _.equalContents = function(collectionA, collectionB) {
+    // Ensure one collection is not a subset of the other. Then compare
+    // their contents.
+    if (_.len(collectionA) !== _.len(collectionB)) {
+      return false;
+    } else {
+      return _.every(collectionA, function(item) {
+        return _.contains(collectionB, item);
+      });
+    }
+  };
+
+  // Returns the length of collection if it is an array, or the number of keys
+  // according to Object.keys if collection is an object.
+  _.len = function(collection) {
+    if (Array.isArray(collection)) {
+      return collection.length;
+    } else {
+      return Object.keys(collection).length;
+    }
   };
 
   // Delays a function for the given number of milliseconds, and then calls
