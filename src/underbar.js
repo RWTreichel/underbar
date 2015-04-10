@@ -407,9 +407,28 @@
   // parameter. For example _.delay(someFunction, 500, 'a', 'b') will
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
+    // Create copy of arguments and then slice off the func and wait parameters.
+    var args = _.toArray(arguments);
+    args = args.slice(2);
+
+    // Call 'func' with the supplied arguments after 'wait' milliseconds.
+    setTimeout(function() {
+      return func.apply(this, args);
+    }, wait);
   };
 
+  // Returns a new array where each element is a property of obj.
+  _.toArray = function(obj) {
+    var result = [];
+    var keys = Object.keys(obj);
+    var len = keys.length;
 
+    for (var i = 0; i < len; i++) {
+      result[i] = obj[keys[i]];
+    }
+
+    return result;
+  }
   /**
    * ADVANCED COLLECTION OPERATIONS
    * ==============================
