@@ -220,6 +220,16 @@
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    iterator = typeof iterator === "function" ? iterator : _.identity;
+
+    return _.reduce(collection, function(oneTrue, item) {
+      if (oneTrue) {
+        return true;
+      } else {
+        // Using the double-not operator to cast to Boolean
+        return !!iterator(item);
+      }
+    }, false);
   };
 
 
