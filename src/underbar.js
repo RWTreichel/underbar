@@ -440,6 +440,23 @@
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var original = array.slice(0, array.length);
+    var result = [];
+
+    // For convenience / readability.
+    var randomIndex = function(arr) {
+      return Math.floor(Math.random() * arr.length);
+    }
+
+    for (var i = 0, len = original.length; i < len; i++) {
+      // Extract a single-element array randomly from 'original', then
+      // access that element and store it in 'next'.
+      var next = original.splice(randomIndex(original),1)[0];
+
+      result.push(next);
+    }
+
+    return result;
   };
 
 
