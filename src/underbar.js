@@ -408,8 +408,7 @@
   // call someFunction('a', 'b') after 500ms
   _.delay = function(func, wait) {
     // Create copy of arguments and then slice off the func and wait parameters.
-    var args = _.toArray(arguments);
-    args = args.slice(2);
+    var args = _.toArray(arguments).slice(2);
 
     // Call 'func' with the supplied arguments after 'wait' milliseconds.
     setTimeout(function() {
@@ -493,6 +492,21 @@
   //
   // Hint: Use Array.isArray to check if something is an array
   _.flatten = function(nestedArray, result) {
+    if (!result) {
+      result = [];
+    }
+
+    if (Array.isArray(nestedArray)) {
+      _.each(nestedArray, function(item) {
+        if (Array.isArray(item)) {
+          result.concat(_.flatten(item, result));
+        } else {
+          result.push(item);
+        }
+      });
+    }
+
+    return result;
   };
 
   // Takes an arbitrary number of arrays and produces an array that contains
@@ -503,6 +517,12 @@
   // Take the difference between one array and a number of other arrays.
   // Only the elements present in just the first array will remain.
   _.difference = function(array) {
+    var args = _.toArray(arguments).slice(1);
+    var combined = _.flatten(args);
+
+    return _.reject(array, function(item) {
+      return _.contains(combined, item);
+    });
   };
 
   // Returns a function, that, when invoked, will only be triggered at most once
